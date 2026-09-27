@@ -1005,7 +1005,7 @@ export const LESSON_TRANSLATIONS: Record<
             'Sa algebra simulator sa itaas, lumipat sa tab na "Word Problems (Work & Rates)" upang makita ang dalawang tubo na sabay nagbubuhos ng tubig sa tangke!',
         },
         whyItMatters:
-          'Dalawang backup generator man na nagcha-charge ng baterya, dalawang bomba na nagpapatuyo ng vault, o dalawang parallel resistors, ang rate formula na ito ang pinaka-inulit-ulit na problemang pang-matematika sa PRC board exam.',
+          'Dalawang backup generator man na nagcha-charge ng baterya, dalawang bomba na nagpapatuyo ng vault, o dalawang parallel resistors, ang rate formula na ito isang kapaki-pakinabang na pattern sa engineering.',
         keyTakeaways: [
           '🤝 Pagtutulungan = I-ADD ANG KANILANG BILIS/RATES (1/T_total = 1/T1 + 1/T2)',
           '⏱️ Ang kabuuang oras ay LAGING MAS MABILIS kaysa sa pinakamabilis na tao nang mag-isa (mas mababa sa 2 oras!)',
@@ -1060,7 +1060,7 @@ export const LESSON_TRANSLATIONS: Record<
             'Sa algebra simulator sa ibabaw, balhin sa tab nga "Word Problems (Work & Rates)" aron makita ang duha ka tubo nga dungan nga nagbubo og tubig sa tangke!',
         },
         whyItMatters:
-          'Duha man ka backup generator nga nag-charge og baterya, duha ka bomba nga nagpahubas og tubig, o duha ka parallel resistors, kini nga rate formula mao ang labing subli-subli nga pangutana sa matematika sa PRC board exam.',
+          'Duha man ka backup generator nga nag-charge og baterya, duha ka bomba nga nagpahubas og tubig, o duha ka parallel resistors, kini nga rate formula mao ang mapuslanong pattern sa math sa engineering.',
         keyTakeaways: [
           '🤝 Pagtinabangay = I-ADD ANG ILANG TULIN/RATES (1/T_total = 1/T1 + 1/T2)',
           '⏱️ Ang dungan nga oras KANUNAYNG MAS DALI kay sa labing paspas nga tawo nga nag-inusara (ubos sa 2 ka oras!)',

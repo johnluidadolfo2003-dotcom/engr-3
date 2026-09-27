@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BookOpen,
   ChevronRight,
@@ -16,7 +16,7 @@ import {
   Sliders,
 } from 'lucide-react';
 import { LessonContent, REESubjectId, AppLanguage } from '../types';
-import { OFFICIAL_TOPIC_GROUPS, REE_SUBJECTS } from '../data/prcCoverage';
+import { STUDY_TOPIC_GROUPS, REE_SUBJECTS } from '../data/prcCoverage';
 import { LESSONS_DATA } from '../data/lessonsData';
 import {
   SUPPORTED_LANGUAGES,
@@ -59,25 +59,29 @@ export const LearnView: React.FC<Props> = ({
   language = 'en',
   onSelectLanguage,
 }) => {
-  const [activeSubject, setActiveSubject] = useState<REESubjectId>('EE');
+  const [activeSubject, setActiveSubject] = useState<REESubjectId>('ESAS');
   const [isSimpleMode, setIsSimpleMode] = useState<boolean>(true); // Default to Simple Mode for easiest learning
-  const [showExplainMore, setShowExplainMore] = useState(false);
-  const [showFullDerivation, setShowFullDerivation] = useState(false);
   const [quickCheckAnswer, setQuickCheckAnswer] = useState<number | null>(null);
   const [showSimExplainer, setShowSimExplainer] = useState(false);
 
   // Active lesson
   const currentLesson: LessonContent =
     LESSONS_DATA.find((l) => l.id === selectedLessonId) ||
+    LESSONS_DATA.find((l) => l.id === 'lesson-esas-engineering-units') ||
     LESSONS_DATA.find((l) => {
-      const group = OFFICIAL_TOPIC_GROUPS.find((g) => g.id === l.topicGroupId);
+      const group = STUDY_TOPIC_GROUPS.find((g) => g.id === l.topicGroupId);
       return group?.subjectId === activeSubject;
     }) ||
     LESSONS_DATA[0];
 
-  const currentTopicGroup = OFFICIAL_TOPIC_GROUPS.find(
+  const currentTopicGroup = STUDY_TOPIC_GROUPS.find(
     (g) => g.id === currentLesson.topicGroupId
   );
+
+  useEffect(() => {
+    if (currentTopicGroup) setActiveSubject(currentTopicGroup.subjectId);
+    setQuickCheckAnswer(null);
+  }, [currentLesson.id]);
 
   const currentLang = language;
   const simpleGuide = getLessonSimplifiedGuide(currentLesson, currentLang);
@@ -136,7 +140,7 @@ export const LearnView: React.FC<Props> = ({
                 onClick={() => {
                   const targetLesson = LESSONS_DATA.find((l) => l.id === f.lessonId);
                   if (targetLesson) {
-                    const g = OFFICIAL_TOPIC_GROUPS.find((tg) => tg.id === targetLesson.topicGroupId);
+                    const g = STUDY_TOPIC_GROUPS.find((tg) => tg.id === targetLesson.topicGroupId);
                     if (g) setActiveSubject(g.subjectId);
                   }
                   onSelectLesson(f.lessonId);
@@ -167,7 +171,7 @@ export const LearnView: React.FC<Props> = ({
                 onClick={() => {
                   setActiveSubject(subId);
                   const firstInSub = LESSONS_DATA.find((l) => {
-                    const g = OFFICIAL_TOPIC_GROUPS.find((tg) => tg.id === l.topicGroupId);
+                    const g = STUDY_TOPIC_GROUPS.find((tg) => tg.id === l.topicGroupId);
                     return g?.subjectId === subId;
                   });
                   if (firstInSub) onSelectLesson(firstInSub.id);
@@ -233,7 +237,7 @@ export const LearnView: React.FC<Props> = ({
       {/* Lesson Selector Carousel / Pills */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
         {LESSONS_DATA.map((lesson) => {
-          const group = OFFICIAL_TOPIC_GROUPS.find((g) => g.id === lesson.topicGroupId);
+          const group = STUDY_TOPIC_GROUPS.find((g) => g.id === lesson.topicGroupId);
           const isCurrent = lesson.id === currentLesson.id;
           const lessonName = getLessonConceptName(lesson, currentLang);
           return (
@@ -241,8 +245,6 @@ export const LearnView: React.FC<Props> = ({
               key={lesson.id}
               onClick={() => {
                 onSelectLesson(lesson.id);
-                setShowExplainMore(false);
-                setShowFullDerivation(false);
                 setQuickCheckAnswer(null);
                 if (group) setActiveSubject(group.subjectId);
               }}
@@ -278,7 +280,7 @@ export const LearnView: React.FC<Props> = ({
             <button
               onClick={() => {
                 const prompt = `Please provide a concise step-by-step engineering walkthrough for ${currentLesson.conceptName} with real values and board exam practice.`;
-                onOpenTutor(localizedConceptName, prompt);
+                onOpenTutor(localizedConceptName, { title: currentLesson.conceptName, formula: currentLesson.formulaLatex, summary: prompt });
               }}
               className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
             >
@@ -308,13 +310,13 @@ export const LearnView: React.FC<Props> = ({
                   },
                   {
                     level: 'Level 2',
-                    id: 'lesson-ee-ac-circuits-power-triangle',
+                    id: 'lesson-ee-power-factor',
                     title: 'AC & Phasors',
                     sub: 'Power Triangle',
                   },
                   {
                     level: 'Level 3',
-                    id: 'lesson-ee-three-phase-wye-delta',
+                    id: 'lesson-ee-power-factor',
                     title: '3-Phase Systems',
                     sub: 'Wye & Delta',
                   },
@@ -354,7 +356,7 @@ export const LearnView: React.FC<Props> = ({
               <span className="font-bold text-slate-700 uppercase tracking-wide">
                 Interactive Simulation Studio
               </span>
-              <span className="font-mono text-[11px]">{currentLesson.visualCaption.slice(0, 50)}...</span>
+              <span className="font-mono text-[11px]">Try moving the controls</span>
             </div>
             {renderVisual(currentLesson.seeItType)}
           </section>
@@ -373,7 +375,7 @@ export const LearnView: React.FC<Props> = ({
             </div>
 
             {/* Symbols Table */}
-            {currentLesson.symbols && currentLesson.symbols.length > 0 && (
+            {!isSimpleMode && currentLesson.symbols && currentLesson.symbols.length > 0 && (
               <div className="pt-2 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                 {currentLesson.symbols.map((sym, sIdx) => (
                   <div key={sIdx} className="bg-slate-950 p-2 rounded-lg border border-slate-800">
@@ -389,7 +391,8 @@ export const LearnView: React.FC<Props> = ({
           </section>
 
           {/* ZERO ALGEBRA FOUNDATION HELPER */}
-          <section className="bg-amber-50 border border-amber-200/90 rounded-2xl p-4 text-xs space-y-2.5">
+          <details className="bg-amber-50 border border-amber-200/90 rounded-2xl p-4 text-xs space-y-2.5">
+            <summary className="cursor-pointer font-semibold text-amber-950">Need help rearranging the formula?</summary>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="text-base">⚖️</span>
@@ -400,7 +403,7 @@ export const LearnView: React.FC<Props> = ({
               <button
                 onClick={() => {
                   const prompt = `Engr. Ramos, I do not have a strong foundation in algebra. Please explain the math for ${localizedConceptName} step-by-step using super simple numbers and no complex equations!`;
-                  onOpenTutor(localizedConceptName, prompt);
+                  onOpenTutor(localizedConceptName, { title: currentLesson.conceptName, formula: currentLesson.formulaLatex, summary: prompt });
                 }}
                 className="px-3 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold text-[11px] transition-colors shadow-xs"
               >
@@ -421,19 +424,19 @@ export const LearnView: React.FC<Props> = ({
                 <span className="text-slate-600 leading-snug block">For 3-part equations like V = I · R: cover the unknown variable with your thumb to see the exact formula!</span>
               </div>
             </div>
-          </section>
+          </details>
 
           {/* Technical Concept & Physical Mechanism */}
           <section className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-3">
             <div className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              Core Technical Principle
+              {isSimpleMode ? 'The idea' : 'Technical explanation'}
             </div>
 
             <p className="text-xs sm:text-sm text-slate-800 leading-relaxed">
-              {currentLesson.plainExplanation}
+              {isSimpleMode ? (simpleGuide?.oneSentenceSummary || localizedPlainExplanation) : currentLesson.plainExplanation}
             </p>
 
-            {simpleGuide?.realLifeMetaphor && (
+            {isSimpleMode && simpleGuide?.realLifeMetaphor && (
               <div className="p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-700 space-y-1">
                 <span className="font-bold text-slate-900 block">
                   Physical Mechanism: {simpleGuide.realLifeMetaphor.title}

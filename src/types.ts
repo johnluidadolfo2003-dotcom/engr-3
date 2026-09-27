@@ -14,26 +14,13 @@ export interface REESubject {
   description: string;
 }
 
-export interface BloomDistribution {
-  remembering: number; // %
-  understanding: number; // %
-  applying: number; // %
-  analyzing: number; // %
-  evaluatingAndCreating: number; // %
-}
-
-export interface OfficialTopicGroup {
-  id: string; // e.g. "MATH-01"
-  groupNumber: number; // 1 to 30
+export interface StudyTopicGroup {
+  id: string;
+  groupNumber: number;
   subjectId: REESubjectId;
-  name: string; // Exact official name
-  allocatedItems: number; // Total allocated items in 100-item TOS
-  weightInSubjectPercent: number;
-  bloomDistribution: BloomDistribution;
+  name: string;
   subtopics: string[];
   foundationRelevance: string;
-  legalSource: string;
-  promulgationDate: string;
 }
 
 export interface SymbolDefinition {
@@ -124,10 +111,7 @@ export type MistakeCause =
   | 'calculator'
   | 'time_pressure';
 
-export type QuestionProvenance =
-  | 'PRC Past Concept Analysis (Verified Format)'
-  | 'Review-Center Verified Question'
-  | 'Original Board-Style Written';
+export type QuestionProvenance = 'Original Board-Style Written';
 
 export interface PracticeQuestion {
   id: string;

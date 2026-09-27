@@ -123,7 +123,7 @@ export const LESSONS_DATA: LessonContent[] = [
       correctIndex: 1,
       explanation: 'Using Ohm’s Law: I = V / R = 10 V / 5 Ω = 2 Amperes.',
     },
-    boardStyleQuestionId: 'q-ee-01-basic-dc',
+    boardStyleQuestionId: 'Q-FOUND-OHM',
   },
   // ----------------------------------------------------
   // ELECTRICAL ENGINEERING: BASIC DC CIRCUITS & OHM'S LAW
@@ -139,7 +139,7 @@ export const LESSONS_DATA: LessonContent[] = [
     plainExplanation:
       'Every complex electrical system starts with Ohm’s Law (V = I · R) and Kirchhoff’s two laws (KCL: sum of currents entering a node is zero; KVL: sum of voltages around a closed loop is zero). When you connect resistors in series, current is identical everywhere, and the total resistance is simply R_total = R₁ + R₂ + ... + Rₙ. When you connect resistors in parallel, voltage across each branch is identical, and total resistance drops below the smallest resistor: 1/R_total = 1/R₁ + 1/R₂. Mastering these basic rules makes delta-wye, Thevenin’s theorem, and AC phasors completely intuitive.',
     explainMore:
-      'In the PRC REE Board Examination, basic DC and AC circuit questions account for up to 18 items in the Electrical Engineering subject (45% weight). The voltage divider formula [V_x = V_total · (R_x / R_total)] and current divider formula [I₁ = I_total · (R₂ / (R₁ + R₂))] allow you to calculate branch voltages and currents in under 15 seconds without setting up simultaneous matrix equations. Furthermore, the maximum power transfer theorem states that maximum power is delivered to a load when load resistance equals the internal Thevenin source resistance (R_L = R_th).',
+      'In the PRC REE Board Examination, basic DC and AC circuit questions are important in the Electrical Engineering subject. The voltage divider formula [V_x = V_total · (R_x / R_total)] and current divider formula [I₁ = I_total · (R₂ / (R₁ + R₂))] allow you to calculate branch voltages and currents in under 15 seconds without setting up simultaneous matrix equations. Furthermore, the maximum power transfer theorem states that maximum power is delivered to a load when load resistance equals the internal Thevenin source resistance (R_L = R_th).',
     formulaLatex: 'V = I \\cdot R, \\quad P = V \\cdot I = I^2 R = \\frac{V^2}{R}, \\quad V_x = V_s \\left(\\frac{R_x}{R_1 + R_2}\\right), \\quad I_1 = I_s \\left(\\frac{R_2}{R_1 + R_2}\\right)',
     symbols: [
       {
@@ -252,7 +252,7 @@ export const LESSONS_DATA: LessonContent[] = [
       explanation:
         'For n identical resistors in parallel: R_eq = R / n = 12 / 3 = 4 Ω. Line current I = V / R_eq = 120 V / 4 Ω = 30 A.',
     },
-    boardStyleQuestionId: 'Q-EE-001',
+    boardStyleQuestionId: 'Q-FOUND-OHM',
   },
 
   // ----------------------------------------------------
@@ -500,7 +500,7 @@ export const LESSONS_DATA: LessonContent[] = [
       explanation:
         'At resonance, XL = XC so net reactance is zero (X = 0). The impedance is purely resistive (Z = R), making phase angle θ = 0° and power factor cos(0°) = 1.0.',
     },
-    boardStyleQuestionId: 'Q-EE-001',
+    boardStyleQuestionId: 'Q-MATH-002',
   },
 
   // ----------------------------------------------------
@@ -746,7 +746,7 @@ export const LESSONS_DATA: LessonContent[] = [
     plainExplanation:
       'Algebra is the bedrock foundation of all engineering licensure problems. Every electrical formula—whether node voltages in circuits, power flow equations, or RLC characteristic equations—boils down to solving algebraic systems. For any quadratic ax² + bx + c = 0, the discriminant Δ = b² - 4ac tells you everything: if Δ > 0, you get two distinct real solutions; if Δ = 0, you get one repeated critical solution; if Δ < 0, roots are complex numbers with imaginary j components. In electrical circuits, this exact discriminant dictates whether a transient circuit rings smoothly or oscillates wildly.',
     explainMore:
-      'In PRC board examinations, 12 items in Mathematics come from Algebra. The most heavily repeated questions fall into three core categories: (1) Quadratic discriminant and root properties (Sum of roots = -b/a, Product = c/a); (2) Word problems involving rate, work, and mixtures (e.g. two generators or pumps operating in parallel where combined rate is 1/T = 1/T₁ + 1/T₂); and (3) Partial fractions decomposition, which is the mandatory stepping stone for solving Inverse Laplace Transforms in circuit transients. Master these three, and you secure full points on algebra without ever needing trial-and-error.',
+      'PRC Annex A assigns 5 Mathematics items to Algebra and Complex Numbers together. These three study examples build useful skills: (1) Quadratic discriminant and root properties (Sum of roots = -b/a, Product = c/a); (2) Word problems involving rate, work, and mixtures (e.g. two generators or pumps operating in parallel where combined rate is 1/T = 1/T₁ + 1/T₂); and (3) Partial fractions decomposition, which is the mandatory stepping stone for solving Inverse Laplace Transforms in circuit transients. Practice each skill with simple examples before trying timed problems.',
     formulaLatex: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}, \\quad x_1 + x_2 = -\\frac{b}{a}, \\quad x_1 \\cdot x_2 = \\frac{c}{a}, \\quad \\frac{1}{T_{total}} = \\frac{1}{T_1} + \\frac{1}{T_2}',
     symbols: [
       {
@@ -786,7 +786,7 @@ export const LESSONS_DATA: LessonContent[] = [
           'In the interactive algebra simulator above, switch to the "Word Problems (Work & Rates)" tab to see the two pipes pouring water into the tank together!',
       },
       whyItMatters:
-        'Whether it’s two backup generators charging a substation battery, two pumps draining a vault, or two resistors in parallel, this rate formula is the most repeated math problem on the PRC board exam.',
+        'Whether it’s two backup generators charging a substation battery, two pumps draining a vault, or two resistors in parallel, this rate formula is a useful recurring engineering math pattern.',
       keyTakeaways: [
         '🤝 Working together = ADD THEIR SPEEDS/RATES (1/T_total = 1/T1 + 1/T2)',
         '⏱️ Combined time is ALWAYS LESS than the fastest person alone (less than 2 hours!)',
@@ -857,7 +857,7 @@ export const LESSONS_DATA: LessonContent[] = [
       explanation:
         'For roots to be equal and repeated, the discriminant must be zero: b² - 4ac = 0. Here, (-8)² - 4(2)(k) = 0 => 64 - 8k = 0 => 8k = 64 => k = 8.',
     },
-    boardStyleQuestionId: 'Q-MATH-002',
+    boardStyleQuestionId: 'Q-FOUND-ALG',
   },
 
   // ----------------------------------------------------
@@ -1084,7 +1084,7 @@ export const LESSONS_DATA: LessonContent[] = [
       explanation:
         'Because the forces are perpendicular (3-4-5 triangle), Resultant R = √(30² + 40²) = 50 kN. The guy wire must exert an equilibrant of exactly 50 kN in the opposite direction.',
     },
-    boardStyleQuestionId: 'Q-ESAS-001',
+    boardStyleQuestionId: 'Q-FOUND-MECH',
   },
 
   // ----------------------------------------------------
@@ -1203,7 +1203,7 @@ export const LESSONS_DATA: LessonContent[] = [
       correctIndex: 0,
       explanation: '100 nF = 100 × 10⁻⁹ F = 0.1 × 10⁻⁶ F = 0.1 µF.',
     },
-    boardStyleQuestionId: 'Q-ESAS-002',
+    boardStyleQuestionId: 'Q-FOUND-UNIT',
   },
 
   // ----------------------------------------------------
@@ -1323,7 +1323,7 @@ export const LESSONS_DATA: LessonContent[] = [
       correctIndex: 1,
       explanation: 'Z = √(6² + 8²) = √(36 + 64) = √100 = 10 Ω (6-8-10 is a scaled 3-4-5 triangle).',
     },
-    boardStyleQuestionId: 'Q-MATH-002',
+    boardStyleQuestionId: 'Q-FOUND-TRIG',
   },
 
   // ----------------------------------------------------
@@ -1444,6 +1444,6 @@ export const LESSONS_DATA: LessonContent[] = [
       correctIndex: 0,
       explanation: 'Magnitude |Z| = √(3² + 4²) = 5; Angle θ = arctan(4/3) = 53.13°.',
     },
-    boardStyleQuestionId: 'Q-MATH-003',
+    boardStyleQuestionId: 'Q-FOUND-COMPLEX',
   },
 ];

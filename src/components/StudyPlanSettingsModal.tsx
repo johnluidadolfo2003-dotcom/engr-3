@@ -16,7 +16,7 @@ export const StudyPlanSettingsModal: React.FC<Props> = ({
   config,
   onSave,
 }) => {
-  const [activeTab, setActiveTab] = useState<'schedule' | 'roadmap'>('roadmap');
+  const [activeTab, setActiveTab] = useState<'schedule' | 'roadmap'>('schedule');
   const [selectedMonth, setSelectedMonth] = useState<number>(1);
 
   const [targetExamDate, setTargetExamDate] = useState(config.targetExamDate);
@@ -46,7 +46,7 @@ export const StudyPlanSettingsModal: React.FC<Props> = ({
         attendingReviewCenter: attendingCenter,
         centerName,
         meetingDays: centerDays,
-        dailyHoursAtCenter: 8,
+        dailyHoursAtCenter: attendingCenter ? config.reviewCenterSchedule.dailyHoursAtCenter : 0,
       },
     };
     onSave(updated);

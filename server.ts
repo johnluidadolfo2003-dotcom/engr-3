@@ -3,12 +3,14 @@ import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const isProd = process.env.NODE_ENV === 'production';
+const appDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 app.use(express.json({ limit: '5mb' }));
 
@@ -55,15 +57,8 @@ app.post('/api/tutor/chat', async (req, res) => {
     }
 
     if (!ai) {
-      // Graceful fallback with rich engineering guidance when API key is not configured
-      let fallbackResponse = `[Offline Tutor Mode] You asked about **${topic || 'REE Review'}** (${language}):\n\n`;
-      if (contextType === 'practice' && questionContext) {
-        fallbackResponse += `💡 **Tutor Hint**: Look at the given values. Verify whether quantities are line-to-line or line-to-neutral, and check if power factor is leading or lagging. Always write out your knowns and target units first before punching into your calculator!`;
-      } else {
-        fallbackResponse += `📘 **Core Principle**: In ${topic || 'Electrical Engineering'}, ensure you keep fundamental laws in mind (Ohm's, KCL, KVL, Faraday's Law, Maxwell's equations). Remember to verify your calculator angle mode (DEG vs RAD) and use polar/rect conversions efficiently.`;
-      }
       return res.json({
-        text: fallbackResponse,
+        text: 'The AI tutor needs a GEMINI_API_KEY on the server. You can still use the visual lessons and practice questions. Ask the site owner to configure the key to enable conversation.',
         offline: true,
       });
     }
@@ -205,7 +200,7 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.resolve(__dirname, 'dist');
+    const distPath = path.resolve(appDirectory, 'dist');
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
       res.sendFile(path.resolve(distPath, 'index.html'));

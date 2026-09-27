@@ -139,7 +139,7 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: 'Calculus & Physical Meaning',
         summary: 'Derivatives as rates of change (i = dq/dt, v = L di/dt) and integrals as accumulation (q = ∫ i dt, energy = ∫ p dt).',
         keyConcepts: ['Rate of change (dq/dt)', 'Accumulation of energy', 'Inductor voltage: v = L di/dt', 'Capacitor current: i = C dv/dt'],
-        lessonId: 'lesson-math-calculus-fundamentals',
+        lessonId: 'lesson-math-calculus',
       },
       {
         id: 'math-further-eng',
@@ -148,7 +148,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: 'Further Engineering Math',
         summary: 'Matrices and determinants, basic probability & statistics, differential equations, numerical methods, and Laplace transforms.',
         keyConcepts: ['Cramer’s rule for mesh analysis', 'First-order differential equations', 'Laplace s-domain (s = jω)', 'Mean, standard deviation'],
-        lessonId: 'lesson-math-matrices-laplace',
       },
     ],
   },
@@ -187,7 +186,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: 'Electric Fields, Magnetic Fields & Induction',
         summary: 'Coulomb’s law, magnetic flux, Faraday’s law of electromagnetic induction (e = -N dΦ/dt), and Lenz’s law.',
         keyConcepts: ['Electric field intensity (E = V / d)', 'Magnetic flux (Φ = B · A)', 'Faraday’s law of induction', 'Lenz’s law (opposing direction)'],
-        lessonId: 'lesson-ee-electromagnetics-induction',
       },
       {
         id: 'phys-esas-allied',
@@ -196,7 +194,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: 'Mechanics, Heat, Fluids & Chemistry (ESAS)',
         summary: 'Engineering Sciences: forces, torque, work, thermal expansion, specific heat, fluid pressure, and chemical reactions for battery storage.',
         keyConcepts: ['Torque: T = F · r (N·m)', 'Heat energy: Q = m · c · ΔT', 'Fluid head pressure (P = ρgh)', 'Battery electrochemistry (lead-acid, lithium)'],
-        lessonId: 'lesson-esas-physics-mechanics',
       },
     ],
   },
@@ -241,7 +238,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: '4. Node and Mesh Analysis',
         summary: 'Systematic circuit solving using Node Voltage Method (KCL equations) and Mesh Current Method (KVL equations).',
         keyConcepts: ['Reference ground node', 'Essential nodes & supernodes', 'Mesh currents & supermesh', 'Matrix equation formulation'],
-        lessonId: 'lesson-ee-mesh-nodal-analysis',
       },
       {
         id: 'circ-thevenin-norton',
@@ -250,7 +246,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: '5. Thevenin & Norton Equivalents',
         summary: 'Simplifying any linear circuit into an equivalent voltage source (Vth) in series with Rth, or current source (In) in parallel with Rth.',
         keyConcepts: ['Open-circuit voltage (Voc = Vth)', 'Short-circuit current (Isc = In)', 'Thevenin resistance (Rth = Voc / Isc)', 'Maximum power transfer: R_load = Rth'],
-        lessonId: 'lesson-ee-thevenin-norton',
       },
       {
         id: 'circ-capacitors-inductors',
@@ -259,7 +254,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: '6. Capacitors, Inductors & Stored Energy',
         summary: 'Capacitor electric field storage (E = ½CV²) and inductor magnetic field storage (E = ½LI²). Continuity of state.',
         keyConcepts: ['Capacitor: i = C dv/dt, voltage cannot change instantly', 'Inductor: v = L di/dt, current cannot change instantly', 'Capacitors in parallel add (C1 + C2)', 'Inductors in series add (L1 + L2)'],
-        lessonId: 'lesson-ee-capacitors-inductors',
       },
       {
         id: 'circ-transients',
@@ -268,7 +262,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: '7. Circuit Switching & Transient Response',
         summary: 'First-order RC and RL transient response. Time constant τ = RC and τ = L/R. Exponential charging and discharging curves.',
         keyConcepts: ['Time constant: τ = R · C (seconds)', 'Time constant: τ = L / R (seconds)', '5τ rule (steady state reached at 5 time constants)', 'Charging formula: v(t) = V_final + (V_initial - V_final) · e^(-t/τ)'],
-        lessonId: 'lesson-ee-transient-response',
       },
     ],
   },
@@ -286,7 +279,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: 'Sine Waves, Frequency, Phase & Phasors',
         summary: 'Sinusoidal AC voltage and current: v(t) = Vm sin(ωt + φ). Angular frequency ω = 2πf, RMS values (Vrms = Vm / √2).',
         keyConcepts: ['Philippine grid frequency: f = 60 Hz (ω = 377 rad/s)', 'V_rms = V_peak / √2 ≈ 0.707 V_peak', 'Phase difference (lead vs lag)', 'Phasor transformation into complex plane'],
-        lessonId: 'lesson-ee-ac-sinusoids-phasors',
       },
       {
         id: 'ac-impedance-analysis',
@@ -322,7 +314,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: 'Three-Phase Systems (Wye & Delta Connections)',
         summary: 'Balanced 3-phase circuits. Wye connection (V_line = √3 · V_phase, I_line = I_phase) and Delta connection (V_line = V_phase, I_line = √3 · I_phase). Total 3-phase power S = √3 · V_LL · I_L.',
         keyConcepts: ['Wye (Y): Line-to-line voltage is √3 × Phase voltage', 'Delta (Δ): Line current is √3 × Phase current', 'Total 3-Phase Real Power: P = √3 · V_LL · I_L · cos θ', 'Neutral wire in 4-wire Wye carry zero current in balanced load'],
-        lessonId: 'lesson-ee-three-phase-wye-delta',
       },
     ],
   },
@@ -349,7 +340,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: 'Electric Machines (DC & AC Motors / Generators)',
         summary: 'DC machines (shunt, series, compound), 3-phase induction motors (slip, torque-speed curve), synchronous machines, starters, speed control.',
         keyConcepts: ['Synchronous speed: Ns = 120 · f / P', 'Slip: s = (Ns - Nr) / Ns', 'Rotor frequency: fr = s · f', 'Motor horsepower: 1 HP = 746 Watts'],
-        lessonId: 'lesson-ee-electric-machines',
       },
       {
         id: 'eq-power-systems',
@@ -367,7 +357,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: 'Electronics, Power Electronics & Controls',
         summary: 'Diodes, half-wave and full-wave rectifiers, smoothing filters, transistors (BJT, MOSFET), thyristors, and basic feedback control.',
         keyConcepts: ['Rectifier DC output voltage: Vdc = 2 Vm / π (Full-wave)', 'Peak Inverse Voltage (PIV)', 'Filter ripple factor', 'Closed loop transfer function'],
-        lessonId: 'lesson-ee-power-electronics',
       },
       {
         id: 'eq-pec-practical-design',
@@ -376,7 +365,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: 'Practical Design & Philippine Electrical Code (PEC)',
         summary: 'PEC rules: branch circuit sizing, feeder ampacity, overcurrent protection, grounding conductor sizing, illumination, and voltage drop limits.',
         keyConcepts: ['Maximum branch circuit voltage drop: 3% (5% overall with feeder)', 'Continuous load factor: 125% ampacity rating', 'Conductor ampacity tables (PEC Table 3.10)', 'Standard breaker trip ratings (15A, 20A, 30A, 40A, 50A...)'],
-        lessonId: 'lesson-ee-philippine-electrical-code',
       },
     ],
   },
@@ -402,7 +390,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: 'Engineering Economics (ESAS)',
         summary: 'Time value of money, simple and compound interest, present worth, future worth, annuities, depreciation, and rate of return.',
         keyConcepts: ['Future worth: F = P(1 + i)ⁿ', 'Uniform series present worth (P/A, i, n)', 'Straight-line depreciation: d = (C - Sv) / n', 'Capitalized cost'],
-        lessonId: 'lesson-esas-engineering-economics',
       },
       {
         id: 'board-law-ethics',
@@ -411,7 +398,6 @@ export const FOUNDATION_STAGES: FoundationStage[] = [
         topicTitle: 'RA 7920 (New Electrical Engineering Law) & Code of Ethics',
         summary: 'Republic Act 7920: Qualifications, board powers, practice scopes (PEE, REE, RME), penalties, and professional code of ethics.',
         keyConcepts: ['RA 7920 promulgation date and provisions', 'Field of practice for PEE, REE, RME', 'Illegal practice penalties', 'Board of Electrical Engineering composition'],
-        lessonId: 'lesson-ee-ra7920-ethics',
       },
     ],
   },

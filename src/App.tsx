@@ -20,18 +20,19 @@ import { DiagnosticModal } from './components/DiagnosticModal';
 import { StudyPlanSettingsModal } from './components/StudyPlanSettingsModal';
 import { AiTutorDrawer } from './components/AiTutorDrawer';
 import { StudyPlanConfig, QuestionAttempt, DiagnosticResult, AppLanguage } from './types';
-import { OFFICIAL_TOPIC_GROUPS, PRC_LEGAL_METADATA } from './data/prcCoverage';
+import { STUDY_TOPIC_GROUPS } from './data/prcCoverage';
+import { LESSONS_DATA } from './data/lessonsData';
 import { SUPPORTED_LANGUAGES, t } from './data/translations';
 
 const DEFAULT_STUDY_PLAN: StudyPlanConfig = {
-  targetExamDate: '2025-04-15', // Upcoming Philippine REE exam cycle
+  targetExamDate: '', // Student chooses a target exam date.
   startDate: new Date().toISOString().split('T')[0],
   dailyStudyMinutes: 180, // 3 hours per day
   reviewCenterSchedule: {
-    attendingReviewCenter: true,
-    centerName: 'Multi-Vector Review Center',
-    meetingDays: ['Saturday', 'Sunday'],
-    dailyHoursAtCenter: 8,
+    attendingReviewCenter: false,
+    centerName: '',
+    meetingDays: [],
+    dailyHoursAtCenter: 0,
   },
   weeklySchedule: {
     Monday: { subjectFocus: 'EE', plannedMinutes: 180 },
@@ -53,7 +54,9 @@ export default function App() {
   const [studyPlan, setStudyPlan] = useState<StudyPlanConfig>(() => {
     try {
       const saved = localStorage.getItem('ree_study_plan');
-      return saved ? JSON.parse(saved) : DEFAULT_STUDY_PLAN;
+      if (!saved) return DEFAULT_STUDY_PLAN;
+      const parsed = JSON.parse(saved);
+      return parsed.targetExamDate === '2025-04-15' ? { ...parsed, targetExamDate: '' } : parsed;
     } catch {
       return DEFAULT_STUDY_PLAN;
     }
@@ -127,12 +130,16 @@ export default function App() {
   const [selectedPracticeQuestionId, setSelectedPracticeQuestionId] = useState<string | undefined>(
     undefined
   );
+  const [selectedPracticeTopicId, setSelectedPracticeTopicId] = useState<string | undefined>();
 
   // Mobile menu toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleRecordAttempt = (attempt: QuestionAttempt) => {
     setAttempts((prev) => [attempt, ...prev]);
+  };
+  const handleUpdateAttempt = (questionId: string, attemptedAt: string, cause: QuestionAttempt['mistakeCause']) => {
+    setAttempts(prev => prev.map(a => a.questionId === questionId && a.attemptedAt === attemptedAt ? { ...a, mistakeCause: cause } : a));
   };
 
   const handleOpenTutor = (topic?: string, extraContext?: any) => {
@@ -151,10 +158,8 @@ export default function App() {
   };
 
   const handleStartDrill = (topicId?: string) => {
-    if (topicId) {
-      // Find matching question
-      setSelectedPracticeQuestionId(undefined);
-    }
+    setSelectedPracticeQuestionId(undefined);
+    setSelectedPracticeTopicId(topicId);
     setCurrentView('practice');
   };
 
@@ -320,6 +325,7 @@ export default function App() {
             selectedLessonId={selectedLessonId}
             onSelectLesson={(id) => setSelectedLessonId(id)}
             onPracticeQuestion={(qId) => {
+              setSelectedPracticeTopicId(undefined);
               setSelectedPracticeQuestionId(qId);
               setCurrentView('practice');
             }}
@@ -335,8 +341,10 @@ export default function App() {
         {currentView === 'practice' && (
           <PracticeView
             initialQuestionId={selectedPracticeQuestionId}
+            initialTopicGroupId={selectedPracticeTopicId}
             onOpenTutor={handleOpenTutor}
             onRecordAttempt={handleRecordAttempt}
+            onUpdateAttempt={handleUpdateAttempt}
             attempts={attempts}
             language={language}
           />
@@ -345,9 +353,10 @@ export default function App() {
         {currentView === 'terms' && (
           <TermsView
             onSelectTermLesson={(topicGroupId) => {
-              const matchedLesson = OFFICIAL_TOPIC_GROUPS.find((g) => g.id === topicGroupId);
+              const matchedLesson = STUDY_TOPIC_GROUPS.find((g) => g.id === topicGroupId);
               if (matchedLesson) {
-                setCurrentView('learn');
+                const lesson = LESSONS_DATA.find(l => l.topicGroupId === matchedLesson.id);
+                if (lesson) handleNavigateToLesson(lesson.id);
               }
             }}
             onOpenTutor={handleOpenTutor}
@@ -358,7 +367,7 @@ export default function App() {
           <ProgressView
             attempts={attempts}
             onSelectTopicForPractice={(topicId) => {
-              setCurrentView('practice');
+              handleStartDrill(topicId);
             }}
           />
         )}

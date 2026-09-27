@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Search, BookOpen, AlertCircle, Sparkles, Filter, ChevronRight } from 'lucide-react';
 import { TERMS_LIBRARY } from '../data/termsLibrary';
 import { REESubjectId, TermItem } from '../types';
-import { REE_SUBJECTS, OFFICIAL_TOPIC_GROUPS } from '../data/prcCoverage';
+import { REE_SUBJECTS, STUDY_TOPIC_GROUPS } from '../data/prcCoverage';
 import { MathView } from '../components/MathView';
 
 interface Props {
@@ -79,7 +79,7 @@ export const TermsView: React.FC<Props> = ({ onSelectTermLesson, onOpenTutor }) 
       {/* Terms Grid */}
       <div className="space-y-4">
         {filteredTerms.map((item) => {
-          const topicGroup = OFFICIAL_TOPIC_GROUPS.find((g) => g.id === item.topicGroupId);
+          const topicGroup = STUDY_TOPIC_GROUPS.find((g) => g.id === item.topicGroupId);
           return (
             <div
               key={item.id}

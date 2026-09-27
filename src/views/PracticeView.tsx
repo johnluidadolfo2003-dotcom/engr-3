@@ -22,28 +22,32 @@ import {
   AppLanguage,
 } from '../types';
 import { PRACTICE_QUESTIONS } from '../data/practiceQuestions';
-import { OFFICIAL_TOPIC_GROUPS, REE_SUBJECTS } from '../data/prcCoverage';
+import { STUDY_TOPIC_GROUPS, REE_SUBJECTS } from '../data/prcCoverage';
 import { MathView } from '../components/MathView';
 
 interface Props {
   initialQuestionId?: string;
+  initialTopicGroupId?: string;
   onOpenTutor: (topic?: string, questionContext?: any) => void;
   onRecordAttempt: (attempt: QuestionAttempt) => void;
+  onUpdateAttempt: (questionId: string, attemptedAt: string, cause: MistakeCause) => void;
   attempts: QuestionAttempt[];
   language?: AppLanguage;
 }
 
 export const PracticeView: React.FC<Props> = ({
   initialQuestionId,
+  initialTopicGroupId,
   onOpenTutor,
   onRecordAttempt,
+  onUpdateAttempt,
   attempts,
   language = 'en',
 }) => {
-  const [practiceMode, setPracticeMode] = useState<
-    'untimed' | 'drill' | 'mixed' | 'timed_mock'
-  >('untimed');
+  const [practiceMode, setPracticeMode] = useState<'all' | 'review'>('all');
   const [activeSubject, setActiveSubject] = useState<REESubjectId | 'ALL'>('ALL');
+  const [topicFilter, setTopicFilter] = useState('ALL');
+  const [showTimer, setShowTimer] = useState(false);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedChoice, setSelectedChoice] = useState<'A' | 'B' | 'C' | 'D' | null>(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
@@ -57,9 +61,18 @@ export const PracticeView: React.FC<Props> = ({
 
   // Filter questions based on subject & mode
   const filteredQuestions = PRACTICE_QUESTIONS.filter((q) => {
-    if (activeSubject === 'ALL') return true;
-    return q.subjectId === activeSubject;
+    if (activeSubject !== 'ALL' && q.subjectId !== activeSubject) return false;
+    if (topicFilter !== 'ALL' && q.topicGroupId !== topicFilter) return false;
+    if (practiceMode === 'review' && attempts.find(a => a.questionId === q.id)?.isCorrect !== false) return false;
+    return true;
   });
+
+  useEffect(() => {
+    if (initialTopicGroupId) {
+      setActiveSubject('ALL'); setTopicFilter(initialTopicGroupId); setPracticeMode('all');
+      setCurrentIdx(0); setSelectedChoice(null); setIsAnswerSubmitted(false);
+    }
+  }, [initialTopicGroupId]);
 
   // Handle initial question selection
   useEffect(() => {
@@ -79,20 +92,20 @@ export const PracticeView: React.FC<Props> = ({
   const currentQ: PracticeQuestion =
     filteredQuestions[currentIdx] || filteredQuestions[0] || PRACTICE_QUESTIONS[0];
 
-  const currentTopicGroup = OFFICIAL_TOPIC_GROUPS.find(
+  const currentTopicGroup = STUDY_TOPIC_GROUPS.find(
     (g) => g.id === currentQ.topicGroupId
   );
 
   // Stop / count timer
   useEffect(() => {
     let interval: any = null;
-    if (timerActive && !isAnswerSubmitted) {
+    if (timerActive && !isAnswerSubmitted && filteredQuestions.length) {
       interval = setInterval(() => {
         setSecondsSpent((s) => s + 1);
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [timerActive, isAnswerSubmitted]);
+  }, [timerActive, isAnswerSubmitted, filteredQuestions.length]);
 
   // Submit Answer
   const handleSubmit = () => {
@@ -119,19 +132,8 @@ export const PracticeView: React.FC<Props> = ({
 
   const handleAssignMistakeCause = (cause: MistakeCause) => {
     setSelectedMistakeCause(cause);
-    // update attempt record
-    const attempt: QuestionAttempt = {
-      questionId: currentQ.id,
-      topicGroupId: currentQ.topicGroupId,
-      subjectId: currentQ.subjectId,
-      userAnswer: selectedChoice || 'A',
-      isCorrect: false,
-      timeSpentSeconds: secondsSpent,
-      mistakeCause: cause,
-      attemptedAt: new Date().toISOString(),
-      bookmarked: bookmarkedIds.has(currentQ.id),
-    };
-    onRecordAttempt(attempt);
+    const latest = attempts.find(a => a.questionId === currentQ.id);
+    if (latest) onUpdateAttempt(currentQ.id, latest.attemptedAt, cause);
   };
 
   const handleNext = () => {
@@ -190,16 +192,15 @@ export const PracticeView: React.FC<Props> = ({
         <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
           {(
             [
-              { id: 'untimed', label: 'Untimed Learning' },
-              { id: 'drill', label: 'Focused Drill' },
-              { id: 'mixed', label: 'Mixed Set' },
-              { id: 'timed_mock', label: 'Timed Board Simulation' },
+              { id: 'all', label: 'All questions' },
+              { id: 'review', label: 'Retry mistakes' },
             ] as const
           ).map((m) => (
             <button
               key={m.id}
               onClick={() => {
                 setPracticeMode(m.id);
+                setCurrentIdx(0);
                 setSelectedChoice(null);
                 setIsAnswerSubmitted(false);
                 setSecondsSpent(0);
@@ -216,27 +217,35 @@ export const PracticeView: React.FC<Props> = ({
           ))}
         </div>
 
+        <label className="text-xs flex items-center gap-2"><input type="checkbox" checked={showTimer} onChange={e => setShowTimer(e.target.checked)} /> Show pace timer</label>
+
         {/* Subject filter */}
         <div className="flex items-center gap-2">
           <select
             value={activeSubject}
             onChange={(e) => {
               setActiveSubject(e.target.value as any);
+              setTopicFilter('ALL');
               setCurrentIdx(0);
               setSelectedChoice(null);
               setIsAnswerSubmitted(false);
             }}
             className="bg-[#F7F6F2] border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-[#14243A] font-medium"
           >
-            <option value="ALL">All REE Subjects (100% TOS)</option>
+            <option value="ALL">All sample questions</option>
             <option value="EE">EE Professional (45%)</option>
             <option value="MATH">Mathematics (25%)</option>
             <option value="ESAS">ESAS & Code (30%)</option>
+          </select>
+          <select aria-label="Study category" value={topicFilter} onChange={e => { setTopicFilter(e.target.value); setCurrentIdx(0); setSelectedChoice(null); setIsAnswerSubmitted(false); }} className="bg-[#F7F6F2] border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs max-w-40">
+            <option value="ALL">All categories</option>
+            {STUDY_TOPIC_GROUPS.filter(g => (activeSubject === 'ALL' || g.subjectId === activeSubject) && PRACTICE_QUESTIONS.some(q => q.topicGroupId === g.id)).map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
           </select>
         </div>
       </div>
 
       {/* Main Question Card */}
+      {filteredQuestions.length === 0 ? <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center"><h2 className="font-bold">No questions here yet</h2><p className="text-sm text-slate-500 mt-2">Choose another category, or return to all questions.</p><button onClick={() => { setTopicFilter('ALL'); setActiveSubject('ALL'); setPracticeMode('all'); setCurrentIdx(0); }} className="mt-4 text-cyan-700 font-semibold text-sm">Show all questions →</button></div> :
       <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden">
         {/* Question Header */}
         <div className="p-4 sm:p-5 border-b border-slate-100 bg-[#F7F6F2]/70 flex flex-wrap items-center justify-between gap-3">
@@ -253,13 +262,13 @@ export const PracticeView: React.FC<Props> = ({
 
           <div className="flex items-center gap-3 text-xs">
             {/* Timer */}
-            <div className="flex items-center gap-1.5 font-mono text-slate-700 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+            {showTimer && <div className="flex items-center gap-1.5 font-mono text-slate-700 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
               <Clock className="w-3.5 h-3.5 text-[#167D82]" />
               <span className={secondsSpent > currentQ.targetSeconds ? 'text-red-600 font-bold' : ''}>
                 {formatTimer(secondsSpent)}
               </span>
               <span className="text-[10px] text-slate-400">/ {currentQ.targetSeconds}s target</span>
-            </div>
+            </div>}
 
             {/* Flag button */}
             <button
@@ -485,6 +494,8 @@ export const PracticeView: React.FC<Props> = ({
                 </div>
               </div>
 
+              <details className="border border-slate-200 rounded-2xl p-4">
+                <summary className="cursor-pointer text-sm font-semibold text-slate-800">Show full steps and common mistakes</summary>
               {/* Step-by-Step Solution */}
               <div className="bg-white rounded-2xl p-5 border border-slate-200 space-y-2.5">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#14243A]">
@@ -530,16 +541,15 @@ export const PracticeView: React.FC<Props> = ({
                 </div>
               </div>
 
+              </details>
+
               {/* Question Provenance & Attribution Bar */}
               <div className="p-3 bg-[#F7F6F2] rounded-xl border border-slate-200 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <span className="font-semibold text-slate-700">Provenance: </span>
-                  <span>{currentQ.provenance}</span>
-                  <span className="mx-1">·</span>
-                  <span>{currentQ.sourceAttribution}</span>
+                  <span>Original practice question · Not an official past-board item</span>
                 </div>
                 <div className="text-[#167D82] font-semibold">
-                  TOS Group: {currentTopicGroup?.name}
+                  Study category: {currentTopicGroup?.name}
                 </div>
               </div>
 
@@ -573,7 +583,7 @@ export const PracticeView: React.FC<Props> = ({
             </div>
           )}
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

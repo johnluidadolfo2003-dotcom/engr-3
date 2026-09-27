@@ -75,7 +75,7 @@ export const AiTutorDrawer: React.FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [autoSpeak, setAutoSpeak] = useState(true);
+  const [autoSpeak, setAutoSpeak] = useState(false);
   const [micError, setMicError] = useState<string | null>(null);
   const [aiStatus, setAiStatus] = useState<{ connected: boolean; message: string }>({
     connected: true,
@@ -291,6 +291,7 @@ export const AiTutorDrawer: React.FC<Props> = ({
         }),
       });
 
+      if (!response.ok) throw new Error('Tutor service unavailable');
       const data = await response.json();
       const assistantMsgText = data.text || 'I could not generate a response. Please rephrase your question.';
       const assistantMsg: Message = {
@@ -305,7 +306,7 @@ export const AiTutorDrawer: React.FC<Props> = ({
         speakText(assistantMsgText);
       }
     } catch (err: any) {
-      const fallbackText = `For ${context.topic || 'this topic'}, check whether values given are single-phase or three-phase, verify angle units (degrees vs radians), and write down given parameters with their SI units first.`;
+      const fallbackText = 'The tutor is unavailable right now. Please try again in a moment; you can continue the visual lesson and practice questions.';
       setMessages((prev) => [
         ...prev,
         {
@@ -337,7 +338,7 @@ export const AiTutorDrawer: React.FC<Props> = ({
             <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
               <span>Engr. Ramos (AI Tutor)</span>
               <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#167D82]/30 text-teal-300 font-mono">
-                PEE Coach
+                Study assistant
               </span>
             </h3>
             <p className="text-[11px] text-slate-400 truncate max-w-[240px]">
