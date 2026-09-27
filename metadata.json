@@ -1,0 +1,6 @@
+{
+  "name": "PRC REE Master - Electrical Engineer Board Review",
+  "description": "Comprehensive six-month Philippine Registered Electrical Engineer (REE) Licensure Exam review platform based on PRBEE Resolution No. 40, s. 2024 Table of Specifications with interactive physics simulations, step-by-step problem solver, and server-side AI study assistant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
